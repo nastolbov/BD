@@ -128,42 +128,58 @@ public class SchoolApp {
         LoginDialog() {
             super("Школьная ИС — Вход в систему");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
-            setSize(440, 300);
-            setLocationRelativeTo(null);
 
-            JPanel root = new JPanel(new BorderLayout(10,10));
-            root.setBorder(new EmptyBorder(20,20,20,20));
+            JPanel root = new JPanel(new BorderLayout(12, 12));
+            root.setBorder(new EmptyBorder(24, 28, 24, 28));
 
-            JLabel title = new JLabel("Информационная система школы", SwingConstants.CENTER);
-            title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
+            JLabel title = new JLabel(
+                "Информационная система школы", SwingConstants.CENTER);
+            title.setFont(title.getFont().deriveFont(Font.BOLD, 20f));
+            title.setBorder(new EmptyBorder(0, 0, 12, 0));
             root.add(title, BorderLayout.NORTH);
 
             JPanel form = new JPanel(new GridBagLayout());
             GridBagConstraints g = new GridBagConstraints();
-            g.insets = new Insets(6,6,6,6);
+            g.insets = new Insets(8, 8, 8, 8);
             g.anchor = GridBagConstraints.WEST;
+            g.fill   = GridBagConstraints.HORIZONTAL;
 
             JLabel l1 = new JLabel("Логин:");
             JLabel l2 = new JLabel("Пароль:");
-            JTextField tfLogin = new JTextField(18);
-            JPasswordField tfPass = new JPasswordField(18);
+            l1.setFont(l1.getFont().deriveFont(14f));
+            l2.setFont(l2.getFont().deriveFont(14f));
 
-            g.gridx=0; g.gridy=0; form.add(l1, g);
-            g.gridx=1;            form.add(tfLogin, g);
-            g.gridx=0; g.gridy=1; form.add(l2, g);
-            g.gridx=1;            form.add(tfPass, g);
+            JTextField tfLogin = new JTextField(20);
+            JPasswordField tfPass = new JPasswordField(20);
+            tfLogin.setFont(tfLogin.getFont().deriveFont(14f));
+            tfPass.setFont(tfPass.getFont().deriveFont(14f));
+            // Гарантируем, что поле не «схлопнется» под pack():
+            Dimension fieldSize = new Dimension(260, 30);
+            tfLogin.setPreferredSize(fieldSize);
+            tfPass.setPreferredSize(fieldSize);
+
+            g.gridx=0; g.gridy=0; g.weightx=0;               form.add(l1,      g);
+            g.gridx=1; g.gridy=0; g.weightx=1;               form.add(tfLogin, g);
+            g.gridx=0; g.gridy=1; g.weightx=0;               form.add(l2,      g);
+            g.gridx=1; g.gridy=1; g.weightx=1;               form.add(tfPass,  g);
 
             JLabel info = new JLabel(
-                "<html><small>Тестовые учётные записи:<br>" +
+                "<html><div style='font-size:11px;color:#555;'>" +
+                "<b>Тестовые учётные записи:</b><br>" +
                 "ivanov_dir / pwd_dir&nbsp;&nbsp;(директор)<br>" +
                 "petrov_t / pwd_tch&nbsp;&nbsp;(учитель)<br>" +
                 "sidorov_s / pwd_stud&nbsp;&nbsp;(учащийся)<br>" +
-                "kuzmina_med / pwd_med&nbsp;&nbsp;(фельдшер)</small></html>");
-            g.gridx=0; g.gridy=2; g.gridwidth=2; form.add(info, g);
+                "kuzmina_med / pwd_med&nbsp;&nbsp;(фельдшер)" +
+                "</div></html>");
+            g.gridx=0; g.gridy=2; g.gridwidth=2; g.weightx=1;
+            g.insets = new Insets(16, 8, 8, 8);
+            form.add(info, g);
 
             root.add(form, BorderLayout.CENTER);
 
             JButton btn = new JButton("Войти");
+            btn.setFont(btn.getFont().deriveFont(Font.BOLD, 14f));
+            btn.setPreferredSize(new Dimension(140, 34));
             btn.addActionListener(e -> {
                 try (Connection c = DriverManager.getConnection(DB_URL)) {
                     User u = User.authenticate(c,
@@ -186,10 +202,15 @@ public class SchoolApp {
                 }
             });
             getRootPane().setDefaultButton(btn);
-            JPanel south = new JPanel();
+            JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            south.setBorder(new EmptyBorder(8, 0, 0, 0));
             south.add(btn);
             root.add(south, BorderLayout.SOUTH);
             setContentPane(root);
+
+            pack();
+            setMinimumSize(new Dimension(460, getHeight()));
+            setLocationRelativeTo(null);
         }
     }
 
@@ -209,9 +230,11 @@ public class SchoolApp {
                 throw new RuntimeException(ex);
             }
             setDefaultCloseOperation(EXIT_ON_CLOSE);
-            setSize(980, 600);
-            setLocationRelativeTo(null);
             buildUI();
+            pack();
+            setMinimumSize(new Dimension(900, 560));
+            setSize(new Dimension(1100, 640));
+            setLocationRelativeTo(null);
         }
 
         private void buildUI() {
@@ -220,6 +243,7 @@ public class SchoolApp {
             // Верхняя панель
             JPanel top = new JPanel(new BorderLayout());
             top.setBorder(new EmptyBorder(10,15,10,15));
+            top.setOpaque(true);
             top.setBackground(new Color(0x1E, 0x88, 0xE5));
             JLabel lbl = new JLabel("Пользователь: " + user.fullName +
                 "   •   Роль: " + user.roleRus());
@@ -229,7 +253,10 @@ public class SchoolApp {
 
             JButton logout = new JButton("Выход");
             logout.addActionListener(e -> { dispose(); new LoginDialog().setVisible(true); });
-            top.add(logout, BorderLayout.EAST);
+            JPanel logoutWrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+            logoutWrap.setOpaque(false);
+            logoutWrap.add(logout);
+            top.add(logoutWrap, BorderLayout.EAST);
 
             root.add(top, BorderLayout.NORTH);
 
