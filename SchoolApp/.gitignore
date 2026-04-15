@@ -1,0 +1,3 @@
+build/
+lib/sqlite-jdbc.jar
+db/school.db
