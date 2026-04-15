@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "SchoolApp",
+            "request": "launch",
+            "mainClass": "SchoolApp",
+            "cwd": "${workspaceFolder}",
+            "classPaths": [
+                "${workspaceFolder}/build",
+                "${workspaceFolder}/lib/sqlite-jdbc.jar"
+            ]
+        }
+    ]
+}

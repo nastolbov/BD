@@ -28,6 +28,39 @@ public class SchoolApp {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) { }
+
+        // Явная регистрация JDBC-драйвера — даёт понятную диагностику,
+        // если sqlite-jdbc.jar отсутствует в classpath.
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException ex) {
+            String msg =
+                "Не найден JDBC-драйвер SQLite (org.sqlite.JDBC).\n\n" +
+                "Скачайте его в папку lib/ и добавьте в classpath:\n\n" +
+                "  mkdir -p lib && curl -L -o lib/sqlite-jdbc.jar \\\n" +
+                "    https://repo1.maven.org/maven2/org/xerial/" +
+                "sqlite-jdbc/3.46.1.3/sqlite-jdbc-3.46.1.3.jar\n\n" +
+                "Запуск:\n" +
+                "  java -cp \"build:lib/sqlite-jdbc.jar\" SchoolApp";
+            System.err.println(msg);
+            JOptionPane.showMessageDialog(null, msg,
+                "Ошибка конфигурации", JOptionPane.ERROR_MESSAGE);
+            System.exit(2);
+        }
+
+        // Проверяем, что файл БД существует.
+        java.io.File dbFile = new java.io.File(
+            System.getProperty("user.dir"), "db/school.db");
+        if (!dbFile.exists()) {
+            String msg =
+                "Файл БД не найден:\n" + dbFile.getAbsolutePath() +
+                "\n\nСоздайте его командой:\n" +
+                "  sqlite3 db/school.db < db/init.sql";
+            JOptionPane.showMessageDialog(null, msg,
+                "Ошибка конфигурации", JOptionPane.ERROR_MESSAGE);
+            System.exit(3);
+        }
+
         // Поддержка «screenshot» режима — автозапуск с готовым логином.
         String autoLogin = System.getProperty("app.autologin", "");
         SwingUtilities.invokeLater(() -> {
