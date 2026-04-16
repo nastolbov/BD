@@ -1,0 +1,106 @@
+digraph ERD {
+    rankdir=LR;
+    node [shape=plaintext, fontname="Helvetica", fontsize=11];
+    edge [fontname="Helvetica", fontsize=10, color="#555555", arrowsize=0.8];
+    graph [bgcolor="white", pad="0.3", nodesep="0.45", ranksep="0.9"];
+
+    users [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#E3F2FD">
+        <tr><td colspan="2" bgcolor="#1E88E5">
+            <font color="white"><b>users</b></font></td></tr>
+        <tr><td align="left"><b>PK login</b></td><td align="left">TEXT</td></tr>
+        <tr><td align="left">password</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">role</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">full_name</td><td align="left">TEXT</td></tr>
+        </table>>];
+
+    teachers [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#E8F5E9">
+        <tr><td colspan="2" bgcolor="#43A047">
+            <font color="white"><b>teachers</b></font></td></tr>
+        <tr><td align="left"><b>PK id</b></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left"><i>FK login</i></td><td align="left">TEXT</td></tr>
+        <tr><td align="left">last_name</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">first_name</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">subject_speciality</td><td align="left">TEXT</td></tr>
+        </table>>];
+
+    classes [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#FFF3E0">
+        <tr><td colspan="2" bgcolor="#FB8C00">
+            <font color="white"><b>classes</b></font></td></tr>
+        <tr><td align="left"><b>PK id</b></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left">name</td><td align="left">TEXT</td></tr>
+        <tr><td align="left"><i>FK teacher_id</i></td><td align="left">INTEGER</td></tr>
+        </table>>];
+
+    subjects [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#F3E5F5">
+        <tr><td colspan="2" bgcolor="#8E24AA">
+            <font color="white"><b>subjects</b></font></td></tr>
+        <tr><td align="left"><b>PK id</b></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left">name</td><td align="left">TEXT</td></tr>
+        </table>>];
+
+    students [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#FFFDE7">
+        <tr><td colspan="2" bgcolor="#FBC02D">
+            <font color="black"><b>students</b></font></td></tr>
+        <tr><td align="left"><b>PK id</b></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left"><i>FK login</i></td><td align="left">TEXT</td></tr>
+        <tr><td align="left">last_name</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">first_name</td><td align="left">TEXT</td></tr>
+        <tr><td align="left"><i>FK class_id</i></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left">birth_date</td><td align="left">TEXT</td></tr>
+        </table>>];
+
+    parents [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#FCE4EC">
+        <tr><td colspan="2" bgcolor="#E91E63">
+            <font color="white"><b>parents</b></font></td></tr>
+        <tr><td align="left"><b>PK id</b></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left"><i>FK student_id</i></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left">last_name</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">first_name</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">phone</td><td align="left">TEXT</td></tr>
+        </table>>];
+
+    grades [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#E1F5FE">
+        <tr><td colspan="2" bgcolor="#0288D1">
+            <font color="white"><b>grades</b></font></td></tr>
+        <tr><td align="left"><b>PK id</b></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left"><i>FK student_id</i></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left"><i>FK subject_id</i></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left">grade</td><td align="left">INTEGER</td></tr>
+        <tr><td align="left">date</td><td align="left">TEXT</td></tr>
+        </table>>];
+
+    medical_records [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="5"
+               bgcolor="#FFEBEE">
+        <tr><td colspan="2" bgcolor="#E53935">
+            <font color="white"><b>medical_records</b></font></td></tr>
+        <tr><td align="left"><b>PK id</b></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left"><i>FK student_id</i></td><td align="left">INTEGER</td></tr>
+        <tr><td align="left">diagnosis</td><td align="left">TEXT</td></tr>
+        <tr><td align="left">date</td><td align="left">TEXT</td></tr>
+        </table>>];
+
+    // Relationships (cardinalities: 1 — N)
+    users   -> teachers        [label="1..1", arrowhead=crow, arrowtail=none, dir=both];
+    users   -> students        [label="1..1", arrowhead=crow, arrowtail=none, dir=both];
+    teachers -> classes        [label="1..N", arrowhead=crow];
+    classes -> students        [label="1..N", arrowhead=crow];
+    students -> parents        [label="1..N", arrowhead=crow];
+    students -> grades         [label="1..N", arrowhead=crow];
+    subjects -> grades         [label="1..N", arrowhead=crow];
+    students -> medical_records[label="1..1", arrowhead=none];
+}
